@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Study - Video Choice</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: auto; padding: 20px; }
+    video { width: 100%; max-height: 300px; margin-bottom: 10px; }
+    .video-pair { display: flex; justify-content: space-between; gap: 10px; }
+    .video-pair video { width: 49%; }
+    .buttons { margin-top: 10px; text-align: center; }
+    button { padding: 10px 20px; font-size: 16px; margin: 5px; }
+    #thankyou { display: none; text-align: center; font-size: 18px; color: green; }
+  </style>
+</head>
+<body>
+  <h2>User Study: Which Video is Closer to A?</h2>
+
+  <div id="video-container">
+    <video id="videoA" controls></video>
+    <div class="video-pair">
+      <video id="videoB" controls></video>
+      <video id="videoC" controls></video>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button onclick="recordChoice('B')">B is Closer</button>
+    <button onclick="recordChoice('C')">C is Closer</button>
+  </div>
+
+  <div id="thankyou">
+    <p>Thank you for your participation!</p>
+  </div>
+
+  <script>
+    const videoGroups = [
+      { A: 'videos/group1_A.mp4', B: 'videos/group1_B.mp4', C: 'videos/group1_C.mp4' },
+      { A: 'videos/group2_A.mp4', B: 'videos/group2_B.mp4', C: 'videos/group2_C.mp4' },
+      { A: 'videos/group3_A.mp4', B: 'videos/group3_B.mp4', C: 'videos/group3_C.mp4' },
+      { A: 'videos/group4_A.mp4', B: 'videos/group4_B.mp4', C: 'videos/group4_C.mp4' },
+      { A: 'videos/group5_A.mp4', B: 'videos/group5_B.mp4', C: 'videos/group5_C.mp4' },
+      { A: 'videos/group6_A.mp4', B: 'videos/group6_B.mp4', C: 'videos/group6_C.mp4' },
+      { A: 'videos/group7_A.mp4', B: 'videos/group7_B.mp4', C: 'videos/group7_C.mp4' },
+      { A: 'videos/group8_A.mp4', B: 'videos/group8_B.mp4', C: 'videos/group8_C.mp4' },
+      { A: 'videos/group9_A.mp4', B: 'videos/group9_B.mp4', C: 'videos/group9_C.mp4' },
+      { A: 'videos/group10_A.mp4', B: 'videos/group10_B.mp4', C: 'videos/group10_C.mp4' }
+    ];
+
+    let currentIndex = 0;
+    let choices = [];
+
+    function loadGroup(index) {
+      if (index >= videoGroups.length) {
+        submitResults();
+        return;
+      }
+      const group = videoGroups[index];
+      document.getElementById('videoA').src = group.A;
+      document.getElementById('videoB').src = group.B;
+      document.getElementById('videoC').src = group.C;
+    }
+
+    function recordChoice(choice) {
+      choices.push({ group: currentIndex + 1, choice });
+      currentIndex++;
+      loadGroup(currentIndex);
+    }
+
+    function submitResults() {
+      document.getElementById('video-container').style.display = 'none';
+      document.querySelector('.buttons').style.display = 'none';
+      document.getElementById('thankyou').style.display = 'block';
+
+      // You can replace this with your own backend/Google Form/FormSubmit logic
+      console.log('User Choices:', JSON.stringify(choices));
+    }
+
+    window.onload = () => loadGroup(currentIndex);
+  </script>
+</body>
+</html>
