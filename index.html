@@ -12,6 +12,7 @@
     .buttons { margin-top: 10px; text-align: center; }
     button { padding: 10px 20px; font-size: 16px; margin: 5px; }
     #thankyou { display: none; text-align: center; font-size: 18px; color: green; }
+    #progress { text-align: center; margin-top: 10px; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -25,28 +26,36 @@
     </div>
   </div>
 
+  <div id="progress"></div>
+
   <div class="buttons">
     <button onclick="recordChoice('B')">B is Closer</button>
     <button onclick="recordChoice('C')">C is Closer</button>
+    <br>
+    <button onclick="previousGroup()">Previous Group</button>
+    <button onclick="nextGroup()">Next Group</button>
   </div>
 
   <div id="thankyou">
     <p>Thank you for your participation!</p>
   </div>
 
+  <!-- Hidden form for FormSubmit -->
+  <form id="resultForm" action="https://formsubmit.co/hwangkx@gmail.com" method="POST" style="display: none;">
+    <input type="hidden" name="result" id="resultField">
+    <button id="submitButton" type="submit">Submit Results</button>
+  </form>
+
   <script>
-    const videoGroups = [
-      { A: 'videos/group1_A.mp4', B: 'videos/group1_B.mp4', C: 'videos/group1_C.mp4' },
-      { A: 'videos/group2_A.mp4', B: 'videos/group2_B.mp4', C: 'videos/group2_C.mp4' },
-      { A: 'videos/group3_A.mp4', B: 'videos/group3_B.mp4', C: 'videos/group3_C.mp4' },
-      { A: 'videos/group4_A.mp4', B: 'videos/group4_B.mp4', C: 'videos/group4_C.mp4' },
-      { A: 'videos/group5_A.mp4', B: 'videos/group5_B.mp4', C: 'videos/group5_C.mp4' },
-      { A: 'videos/group6_A.mp4', B: 'videos/group6_B.mp4', C: 'videos/group6_C.mp4' },
-      { A: 'videos/group7_A.mp4', B: 'videos/group7_B.mp4', C: 'videos/group7_C.mp4' },
-      { A: 'videos/group8_A.mp4', B: 'videos/group8_B.mp4', C: 'videos/group8_C.mp4' },
-      { A: 'videos/group9_A.mp4', B: 'videos/group9_B.mp4', C: 'videos/group9_C.mp4' },
-      { A: 'videos/group10_A.mp4', B: 'videos/group10_B.mp4', C: 'videos/group10_C.mp4' }
-    ];
+    const MAX_GROUPS = 2;
+    const videoGroups = [];
+    for (let i = 1; i <= MAX_GROUPS; i++) {
+      videoGroups.push({
+        A: `videos/group${i}_A.mp4`,
+        B: `videos/group${i}_B.mp4`,
+        C: `videos/group${i}_C.mp4`
+      });
+    }
 
     let currentIndex = 0;
     let choices = [];
@@ -60,21 +69,38 @@
       document.getElementById('videoA').src = group.A;
       document.getElementById('videoB').src = group.B;
       document.getElementById('videoC').src = group.C;
+      document.getElementById('progress').innerText = `Group ${index + 1} of ${videoGroups.length}`;
     }
 
     function recordChoice(choice) {
-      choices.push({ group: currentIndex + 1, choice });
+      choices[currentIndex] = { group: currentIndex + 1, choice };
       currentIndex++;
       loadGroup(currentIndex);
+    }
+
+    function previousGroup() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        loadGroup(currentIndex);
+      }
+    }
+
+    function nextGroup() {
+      if (currentIndex < videoGroups.length - 1) {
+        currentIndex++;
+        loadGroup(currentIndex);
+      }
     }
 
     function submitResults() {
       document.getElementById('video-container').style.display = 'none';
       document.querySelector('.buttons').style.display = 'none';
+      document.getElementById('progress').style.display = 'none';
       document.getElementById('thankyou').style.display = 'block';
 
-      // You can replace this with your own backend/Google Form/FormSubmit logic
-      console.log('User Choices:', JSON.stringify(choices));
+      // Submit result via FormSubmit
+      document.getElementById('resultField').value = JSON.stringify(choices);
+      document.getElementById('resultForm').submit();
     }
 
     window.onload = () => loadGroup(currentIndex);
