@@ -13,7 +13,7 @@
     .video-pair { display: flex; gap: 20px; margin-top: 40px; }
     .video-column { flex: 1; display: flex; flex-direction: column; align-items: center; }
     .choice-button { margin-top: 10px; background-color: #3498db; color: white; border: none; border-radius: 8px; padding: 8px 16px; font-size: 14px; cursor: pointer; transition: background-color 0.3s ease; }
-    .choice-button.selected { background-color: #1d6fa5; }
+    .choice-button.selected { background-color: #008b1e; }
     .control-buttons { margin-top: 25px; display: flex; justify-content: center; align-items: center; gap: 10px; }
     button.control { background-color: #95a5a6; color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; cursor: pointer; transition: background-color 0.3s ease; }
     button.control:disabled { background-color: #bdc3c7; cursor: not-allowed; }
@@ -27,17 +27,17 @@
 
   <div id="video-container">
     <div class="video-column">
-      <video id="videoReal" controls></video>
+      <video id="videoReal" controls autoplay muted loop playsinline></video>
       <div class="caption">Real-world Crowd Video</div>
     </div>
     <div class="video-pair">
       <div class="video-column">
-        <video id="videoSim1" controls></video>
+        <video id="videoSim1" controls autoplay muted loop playsinline></video>
         <div class="caption">Simulation 1</div>
         <button class="choice-button" id="button1" onclick="selectChoice('1')">Choose 1</button>
       </div>
       <div class="video-column">
-        <video id="videoSim2" controls></video>
+        <video id="videoSim2" controls autoplay muted loop playsinline></video>
         <div class="caption">Simulation 2</div>
         <button class="choice-button" id="button2" onclick="selectChoice('2')">Choose 2</button>
       </div>
@@ -60,14 +60,15 @@
   <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 
   <script>
-    const MAX_GROUPS = 2;
+    const MAX_GROUPS = 20;
     let videoGroups = [];
     for (let i = 1; i <= MAX_GROUPS; i++) {
+      const id = String(i).padStart(2, '0');
       videoGroups.push({
-        id: `Group ${i}`,
-        real: `videos/group${i}_A.mp4`,
-        simA: `videos/group${i}_B.mp4`,
-        simB: `videos/group${i}_C.mp4`
+        id: `Group ${id}`,
+        real: `videos/${id}_A.mp4`,
+        simA: `videos/${id}_B.mp4`,
+        simB: `videos/${id}_C.mp4`
       });
     }
 
