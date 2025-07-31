@@ -32,7 +32,7 @@
     video {
       width: 100%;
       border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      pointer-events: none;
     }
     .video-pair {
       display: flex;
@@ -44,20 +44,6 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-    }
-    .choice-button {
-      margin-top: 10px;
-      background-color: #3498db;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 8px 16px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    .choice-button.selected {
-      background-color: #008b1e;
     }
     .control-buttons {
       margin-top: 25px;
@@ -105,29 +91,42 @@
       border-radius: 5px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
+    .video-click-wrapper {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+    }
+    .video-column.selected-border .video-click-wrapper {
+      outline: 5px solid #008b1e;
+      outline-offset: -5px;
+    }
   </style>
 </head>
 <body>
   <h2>Crowd Simulation Similarity Study</h2>
   <p class="description">
-    First, watch the real-world crowd video (top). Then, watch the two crowd simulation videos (below) and choose which simulated video you think is more similar to the real one.
+    In these questions you will see a real video of a crowd and, below it, two videos obtained from a crowd simulation. In the simulation videos, each individual is represented with a circle. Please click the video that you think most closely matches the crowd behavior in the real video.
   </p>
 
   <div id="video-container">
     <div class="video-column">
-      <video id="videoReal" controls autoplay muted loop playsinline></video>
+      <video id="videoReal" autoplay muted loop playsinline></video>
       <div class="caption">Real-world Crowd Video</div>
     </div>
     <div class="video-pair">
-      <div class="video-column">
-        <video id="videoSim1" controls autoplay muted loop playsinline></video>
+      <div class="video-column" id="col1">
+        <div class="video-click-wrapper" onclick="selectChoice('1')">
+          <video id="videoSim1" autoplay muted loop playsinline></video>
+        </div>
         <div class="caption">Simulation 1</div>
-        <button class="choice-button" id="button1" onclick="selectChoice('1')">Choose 1</button>
       </div>
-      <div class="video-column">
-        <video id="videoSim2" controls autoplay muted loop playsinline></video>
+      <div class="video-column" id="col2">
+        <div class="video-click-wrapper" onclick="selectChoice('2')">
+          <video id="videoSim2" autoplay muted loop playsinline></video>
+        </div>
         <div class="caption">Simulation 2</div>
-        <button class="choice-button" id="button2" onclick="selectChoice('2')">Choose 2</button>
       </div>
     </div>
   </div>
@@ -199,16 +198,19 @@
 
       document.getElementById('nextButton').disabled = true;
       selectedChoice = null;
-      document.getElementById('button1').classList.remove('selected');
-      document.getElementById('button2').classList.remove('selected');
+
+      document.getElementById('col1').classList.remove('selected-border');
+      document.getElementById('col2').classList.remove('selected-border');
 
       document.getElementById('progress').textContent = `Progress: ${index + 1} / ${videoGroups.length}`;
     }
 
     function selectChoice(choice) {
       selectedChoice = choice;
-      document.getElementById('button1').classList.toggle('selected', choice === '1');
-      document.getElementById('button2').classList.toggle('selected', choice === '2');
+
+      document.getElementById('col1').classList.toggle('selected-border', choice === '1');
+      document.getElementById('col2').classList.toggle('selected-border', choice === '2');
+
       document.getElementById('nextButton').disabled = false;
     }
 
